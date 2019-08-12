@@ -3,9 +3,11 @@ import ReactDOM from 'react-dom';
 import './index.css';
 import App from './App';
 import * as serviceWorker from './serviceWorker';
-import {createStore, combineReducers} from 'redux';
+import {createStore, applyMiddleware} from 'redux';
 import rootReducer from './reducers';
 import {Provider} from 'react-redux';
+import thunk from 'redux-thunk'
+import TodoCon from './containers/todoContainer'
 
 //store
 
@@ -14,6 +16,7 @@ import {Provider} from 'react-redux';
 
 const store = createStore(
     rootReducer,
+    applyMiddleware(thunk),
     window.__REDUX_DEVTOOLS_EXTENSION__ && window.__REDUX_DEVTOOLS_EXTENSION__()
     );
 store.subscribe(() => console.log(store.getState()));
@@ -23,6 +26,7 @@ store.subscribe(() => console.log(store.getState()));
 
 ReactDOM.render(
     <Provider store={store}>
+        <TodoCon />
         <App />
     </Provider>, document.getElementById('root'));
 
