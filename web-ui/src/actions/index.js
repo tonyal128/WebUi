@@ -1,20 +1,38 @@
-import axios from 'axios';
+export const FETCH_TODO_DATA_START   = 'FETCH_TODO_DATA_START';
+export const FETCH_TODO_DATA_SUCCESS = 'FETCH_TODO_DATA_SUCCESS';
+export const FETCH_TODO_DATA_FAILURE = 'FETCH_TODO_DATA_FAILURE';
 
-export function loadTodoUserId(){
+export function loadTodoData(){
     return(dispatch) => {
-        return axios.get("https://jsonplaceholder.typicode.com/todos".then((response) => {
-            dispatch(fetchTodoData(response.data))
-        })
-        );
-    }
+        dispatch(fetchTodoDataStart());
+        return fetch('https://jsonplaceholder.typicode.com/todos')
+                    .then(handleErrors)
+                    .then(res => res.json)
+                    .then(json => {
+                        dispatch(fetchTodoDataSuccess(json.todo));
+                        return json.todo;
+                    })
+                    .catch(error => dispatch(fetchTodoDataFailure(error)));
+    };
 }
 
-const fetchTodoData = (data) => {
-    return {
-        type: 'FETCH_TODO_DATA',
-        userId: data.userId,
-        id: data.id,
-        title: data.title,
-        completed: data.completed
+function handleErrors(response) {
+    if (!response.ok) {
+      throw Error(response.statusText);
     }
-}
+    return response;
+  }
+
+export const fetchTodoDataStart = () => ({
+    type: FETCH_TODO_DATA_START
+  });
+
+  export const fetchTodoDataSuccess = todos => ({
+    type: FETCH_TODO_DATA_SUCCESS,
+    payload: { todos }
+  });
+  
+  export const fetchTodoDataFailure = error => ({
+    type: FETCH_TODO_DATA_FAILURE,
+    payload: { error }
+  });

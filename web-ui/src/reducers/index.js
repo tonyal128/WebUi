@@ -3,7 +3,7 @@ import fetchTodoData from './fetchTodoData.js';
 import {combineReducers} from 'redux';
 
 const rootReducers = combineReducers({
-    todo: fetchTodoData,
+    todos: fetchTodoData,
     theme: fetchThemeData
 });
 

@@ -1,33 +1,37 @@
-import React from 'react';
+import React from "react";
+import { connect } from "react-redux";
+import { loadTodoData } from "../actions/index";
 
-class todo extends React.Component{
-    /*constructor(props){
-        super(props);
-        this.state = {
-            todos: [],
-            isLoaded: false
-        }
+class todo extends React.Component {
+  componentDidMount() {
+    this.props.dispatch(loadTodoData());
+  }
+
+  render() {
+    const { error, loading, todos } = this.props;
+
+    if (error) {
+      return <div>Error! {error.message}</div>;
     }
-    componentDidMount(){
-        fetch('https://jsonplaceholder.typicode.com/todos')
-        .then(res => res.json()
-        .then(json => {
-            this.setState({
-                isLoaded: true,
-                todos: json
-            })
-        }))
-        
-    }*/
-    render(){
-      //  let { todos} = this.state;
-        return(
-            <div className="wrapper">                
-                <button onClick={() => {this.props.handleClick()}}>Fetch Data</button>
-                <p>{this.props.userId}</p>
-            </div>
-        )
+
+    if (loading) {
+      return <div>Loading...</div>;
     }
+
+    return (
+      <ul>
+        {todos.map(todo =>
+          <li key={todo.id}></li>
+        )}
+      </ul>
+    );
+  }
 }
 
-export default todo;
+const mapStateToProps = state => ({
+  todos: state.todos.items,
+  loading: state.todos.loading,
+  error: state.todos.error
+});
+
+export default connect(mapStateToProps)(todo);
