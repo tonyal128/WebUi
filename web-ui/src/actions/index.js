@@ -9,8 +9,8 @@ export function loadTodoData(){
                     .then(handleErrors)
                     .then(res => res.json)
                     .then(json => {
-                        dispatch(fetchTodoDataSuccess(json.todo));
-                        return json.todo;
+                        dispatch(fetchTodoDataSuccess(json.todos));
+                        return json.todos;
                     })
                     .catch(error => dispatch(fetchTodoDataFailure(error)));
     };

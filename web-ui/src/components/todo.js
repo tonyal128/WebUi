@@ -1,37 +1,40 @@
 import React from "react";
-import { connect } from "react-redux";
-import { loadTodoData } from "../actions/index";
+import {Button,Card,ListGroup} from "react-bootstrap";
 
-class todo extends React.Component {
+const API = 'https://jsonplaceholder.typicode.com/todos';
+
+class Todo extends React.Component {
+  constructor(props){
+    super(props);
+    this.state = {
+        props: [],
+    }
+  }
   componentDidMount() {
-    this.props.dispatch(loadTodoData());
+    fetch(API)
+        .then(response => response.json())
+        .then(data => this.setState({ props: data }));
   }
 
   render() {
-    const { error, loading, todos } = this.props;
-
-    if (error) {
-      return <div>Error! {error.message}</div>;
-    }
-
-    if (loading) {
-      return <div>Loading...</div>;
-    }
-
+    const { props } = this.state;
     return (
-      <ul>
-        {todos.map(todo =>
-          <li key={todo.id}></li>
-        )}
-      </ul>
-    );
+        <Card>
+            <Card.Header>To Do</Card.Header>
+            <div>
+            {props.map(prop =>
+                <ListGroup variant="flush">
+                    <ListGroup.Item>User ID: {prop.userId}</ListGroup.Item>
+                    <ListGroup.Item>ID: {prop.id}</ListGroup.Item>
+                    <ListGroup.Item>Title: {prop.title}</ListGroup.Item>
+                    <ListGroup.Item>Completed: {prop.completed.toString()}</ListGroup.Item>                
+                </ListGroup>
+                
+            )}
+            <Button>Fetch Data</Button>
+            </div>
+        </Card>
+      );
   }
 }
-
-const mapStateToProps = state => ({
-  todos: state.todos.items,
-  loading: state.todos.loading,
-  error: state.todos.error
-});
-
-export default connect(mapStateToProps)(todo);
+export default (Todo);
